@@ -129,3 +129,58 @@ class Bitfinex extends Market {
     }
 
 }
+
+class IexTrading extends Market {
+
+    constructor() {
+        super();
+        this.apiAdrress = "https://api.iextrading.com/1.0/stock/AMD/price";
+        this.priceInfo = "Based on IEX Trading";
+        this.id = 2;
+    }
+
+    fetchPrices(fctn) {
+        var _this = this;
+        var addr
+        $.ajax({
+            dataType: "json",
+            url: this.apiAdrress,
+            success: function(data) {
+                // console.log("from price, got: " + data)
+                _this.setLatestPrice(data);
+            }
+        });
+        $.get("https://api.iextrading.com/1.0/stock/AMD/ohlc", function(data, status){
+            // console.log(data);
+            _this.setOpenPrice(data.close.price);
+        })
+    }
+
+    // runWebsocketTicker(updateTicker) {
+
+    //     const w = new WebSocket('wss://api.bitfinex.com/ws/2');
+    //     var _this = this;
+    //     w.onmessage = function(event) {
+    //         var msgData = JSON.parse(event.data);
+    //         if (msgData instanceof Array) {
+    //             var latestPrice = msgData[1][6];
+    //             if (latestPrice != undefined) {
+    //                 _this.setLatestPrice(latestPrice);
+    //                 updateTicker(_this.getOpenPrice(), latestPrice, _this.getId());
+    //             }
+    //         }
+    //     };
+
+    //     let msg = JSON.stringify({
+    //         event: 'subscribe',
+    //         channel: 'ticker',
+    //         symbol: 'tBTCUSD'
+    //     })
+
+    //     w.onopen = function() {
+    //         w.send(msg);
+    //     };
+
+    // }
+
+}
